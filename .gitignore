@@ -1,0 +1,14 @@
+# Exclude license and sensitive files
+.license.key
+.ssh
+.ssh/
+
+# Exclude API key
+config/.api_key
+
+# Exclude temporary files
+*.log
+*.bak
+
+# License key - DO NOT COMMIT
+.license.key
