@@ -32,6 +32,15 @@ draw_header() {
     echo -e "+-++-++-  +-++-+  +-++-+  +-++-++-  ++-++-++-  "
     echo -e "+-++-++-  +-+  +-+    +-+  +-+    +-+     +-+  "
     echo -e "+-+  +-+  +-+   +-+    +-+  +-+    +-+     +-+  "
+    echo -e ""
+    echo -e "¦¦+  ¦¦+  KRESEK LICENSE SYSTEM  ¦¦+  ¦¦+"
+    echo -e "¦¦+  ¦+¦+--+ ¦¦+----+ ¦+--+ ¦+--++-+  ¦+¦+--+"
+    echo -e "++++  ++  ++  ++++++  ++  ++  ++ ++  ++  ++  ++"
+    echo -e "+-++-++  +-+  ++-++-+  +-+  +-++-+  +-++-++  +-+"
+    echo -e "+-++-++  +-+  ++-  +-+ +-+  +-+    +-+  +-+  +-+"
+    echo -e "+-+  +-+  +-+  ++-  +-+ +-+  +-+    +-+  +-+  +-+"
+    echo -e ""
+    echo -e "  ${NC}Kantong - PW136 PWI The Lost Empire${CYAN}"
     echo -e "${NC}"
 }
 
@@ -86,8 +95,36 @@ sudo /usr/src/.kresek/src/activation.sh
 
 if [[ -f "$LICENSE_FILE" ]] && [[ -s "$LICENSE_FILE" ]]; then
     echo ""
-    echo -e "${GREEN}✓ License aktif! Shell dibuka.${NC}"
-    exec /bin/bash
+    echo ""
+    echo -e "${YELLOW}╔═══════════════════════════════════════════════════════════════════════╗${NC}"
+    echo -e "${YELLOW}║              AKTIVASI BERHASIL - PERHATIKAN!                          ║${NC}"
+    echo -e "${YELLOW}╚═══════════════════════════════════════════════════════════════════════╝${NC}"
+    echo ""
+    echo -e "  ${GREEN}✓${NC}  License berhasil diaktifkan!"
+    echo ""
+    echo -e "  ${RED}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+    echo -e "  ${RED}  ⚠  AKUN KANTONG AKAN DIBLOKIR                                    ${NC}"
+    echo -e "  ${RED}  ⚠  Akses SSH sebagai KANTONG tidak lagi diizinkan                 ${NC}"
+    echo -e "  ${RED}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+    echo ""
+    echo -e "  ${CYAN}  ► NEXT LOGIN - GUNAKAN ROOT dengan PPK:${NC}"
+    echo ""
+    echo -e "    ${GREEN}Host     :${NC} ${YELLOW}${IP}${NC}"
+    echo -e "    ${GREEN}Port     :${NC} ${YELLOW}22${NC}"
+    echo -e "    ${GREEN}User     :${NC} ${YELLOW}root${NC}"
+    echo -e "    ${GREEN}Auth     :${NC} ${YELLOW}PPK Key (download dari web)${NC}"
+    echo ""
+    echo -e "  ${CYAN}  File PPK:${NC}"
+    echo -e "    ${YELLOW}https://activation.kresek.my.id:2104/lisence${NC}"
+    echo ""
+    echo -e "${RED}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+    echo ""
+    echo -ne "  Tekan ${GREEN}[Enter]${NC} untuk keluar dari PuTTY..."
+    read
+    echo ""
+    echo -e "  ${CYAN}Tutup window PuTTY untuk mengakhiri sesi.${NC}"
+    sleep 1
+    exit 0
 else
     echo ""
     echo -e "${RED}✗ Aktivasi gagal. SSH ditutup.${NC}"
