@@ -7,13 +7,7 @@ set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/../config/config.cfg"
-
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-CYAN='\033[0;36m'
-BOLD='\033[1m'
-NC='\033[0m'
+source "$SCRIPT_DIR/lib_banner.sh"
 
 HWID=$(cat /sys/class/dmi/id/product_uuid 2>/dev/null | tr '[:lower:]' '[:upper:]')
 IP=$(hostname -I | awk '{print $1}')
@@ -21,31 +15,6 @@ IP=$(hostname -I | awk '{print $1}')
 API_ACTIVATE_URL=$(eval echo "$API_ACTIVATE")
 
 # ============================================================
-draw_header() {
-    echo -e "${CYAN}${BOLD}"
-    echo -e "��+  ��+ �����+ ���+   ��+��������+ ������+ ���+   ��+ ������+ "
-    echo -e "��� ��++��+--��+����+  ���+--��+--+��+---��+����+  �����+----+ "
-    echo -e "�����++ ����������+��+ ���   ���   ���   �����+��+ ������  ���+"
-    echo -e "��+-��+ ��+--������+��+���   ���   ���   ������+��+������   ���"
-    echo -e "���  ��+���  ������ +�����   ���   +������++��� +�����+������++"
-    echo -e "+-+  +-++-+  +-++-+  +---+   +-+    +-----+ +-+  +---+ +-----+ "
-    echo -e ""
-    echo -e "��+  ��+������+ �������+�������+�������+��+  ��+"
-    echo -e "��� ��++��+--��+��+----+��+----+��+----+��� ��++"
-    echo -e "�����++ ������++�����+  �������+�����+  �����++ "
-    echo -e "��+-��+ ��+--��+��+--+  +----�����+--+  ��+-��+ "
-    echo -e "���  ��+���  ����������+���������������+���  ��+"
-    echo -e "+-+  +-++-+  +-++------++------++------++-+  +-+"
-    echo -e ""
-    echo -e "${NC}VM Activation System � Kantong Activation${CYAN}"
-    echo -e "${NC}"
-}
-# ============================================================
-banner() {
-    clear
-    draw_header
-}
-
 check_license() { [[ -f "$LICENSE_FILE" ]] && [[ -s "$LICENSE_FILE" ]]; }
 
 # ============================================================
@@ -59,26 +28,27 @@ unlock_all() {
     systemctl reload sshd 2>/dev/null || systemctl reload ssh
 
     echo ""
-    echo -e "  ${GREEN}  ✓ ROOT SSH   : Open${NC}"
-    echo -e "  ${GREEN}  ✓ SCP        : Open{NC}"
-    echo -e "  ${GREEN}  ✓ SFTP       : Open${NC}"
+    echo -e "  ${B_GREEN}  ✓ ROOT SSH   : Open${B_NC}"
+    echo -e "  ${B_GREEN}  ✓ SCP        : Open${B_NC}"
+    echo -e "  ${B_GREEN}  ✓ SFTP       : Open${B_NC}"
 }
 
 # ============================================================
 do_login() {
-    banner
-    echo -e "${CYAN}┌───────────────────────────────────────────────────────────────────┐${NC}"
-    echo -e "${CYAN}│                     STEP 1 : INPUT API KEY                             │${NC}"
-    echo -e "${CYAN}└───────────────────────────────────────────────────────────────────┘${NC}"
+    clear
+    draw_header
+    echo -e "${B_CYAN}┌───────────────────────────────────────────────────────────────────┐${B_NC}"
+    echo -e "${B_CYAN}│                     STEP 1 : INPUT API KEY                             │${B_NC}"
+    echo -e "${B_CYAN}└───────────────────────────────────────────────────────────────────┘${B_NC}"
     echo ""
-    echo -e "  ${YELLOW}  Dapatkan API Key di ${NC}"
-    echo -e "  ${CYAN}    https://kresek.my.id${NC}"
+    echo -e "  ${B_YELLOW}  Dapatkan API Key di ${B_NC}"
+    echo -e "  ${B_CYAN}    https://kresek.my.id${B_NC}"
     echo ""
-    echo -ne "  Masukkan ${GREEN}API Key${NC}: "
+    echo -ne "  Masukkan ${B_GREEN}API Key${B_NC}: "
     read -r API_KEY
 
     if [[ -z "$API_KEY" ]]; then
-        echo -e "\n  ${RED}✗ API Key tidak boleh kosong!${NC}"
+        echo -e "\n  ${B_RED}✗ API Key tidak boleh kosong!${B_NC}"
         sleep 2
         return 1
     fi
@@ -87,47 +57,48 @@ do_login() {
     chmod 600 "$SCRIPT_DIR/../config/.api_key"
 
     echo ""
-    echo -e "  ${GREEN}✓ API Key disimpan!${NC}"
-    echo -e "  ${GREEN}  Lanjut ke Step 2.${NC}"
+    echo -e "  ${B_GREEN}✓ API Key disimpan!${B_NC}"
+    echo -e "  ${B_GREEN}  Lanjut ke Step 2.${B_NC}"
     sleep 2
     return 0
 }
 
 # ============================================================
 do_activate() {
-    banner
-    echo -e "${CYAN}┌───────────────────────────────────────────────────────────────────┐${NC}"
-    echo -e "${CYAN}│                     STEP 2 : AKTIVASI LICENSE                         │${NC}"
-    echo -e "${CYAN}└───────────────────────────────────────────────────────────────────┘${NC}"
+    clear
+    draw_header
+    echo -e "${B_CYAN}┌───────────────────────────────────────────────────────────────────┐${B_NC}"
+    echo -e "${B_CYAN}│                     STEP 2 : AKTIVASI LICENSE                         │${B_NC}"
+    echo -e "${B_CYAN}└───────────────────────────────────────────────────────────────────┘${B_NC}"
     echo ""
 
     API_KEY_FILE="$SCRIPT_DIR/../config/.api_key"
     if [[ ! -f "$API_KEY_FILE" ]]; then
-        echo -e "  ${RED}✗ Jalankan STEP 1 terlebih dahulu!${NC}"
+        echo -e "  ${B_RED}✗ Jalankan STEP 1 terlebih dahulu!${B_NC}"
         echo ""
-        echo -ne "  Tekan ${GREEN}[Enter]${NC}..."
+        echo -ne "  Tekan ${B_GREEN}[Enter]${B_NC}..."
         read
         return 1
     fi
 
     API_KEY=$(cat "$API_KEY_FILE")
 
-    echo -e "  ${CYAN}  ► IP Address  : ${YELLOW}${IP}${NC}"
-    echo -e "  ${CYAN}  ► HWID        : ${YELLOW}${HWID}${NC}"
-    echo -e "  ${CYAN}  ► Version     : ${YELLOW}${VER}${NC}"
+    echo -e "  ${B_CYAN}  ► IP Address  : ${B_YELLOW}${IP}${B_NC}"
+    echo -e "  ${B_CYAN}  ► HWID        : ${B_YELLOW}${HWID}${B_NC}"
+    echo -e "  ${B_CYAN}  ► Version     : ${B_YELLOW}${VER}${B_NC}"
     echo ""
 
-    echo -ne "  Masukkan ${GREEN}Activation Code${NC}: "
+    echo -ne "  Masukkan ${B_GREEN}Activation Code${B_NC}: "
     read -r ACTIVATION_CODE
 
     if [[ -z "$ACTIVATION_CODE" ]]; then
-        echo -e "\n  ${RED}✗ Activation Code tidak boleh kosong!${NC}"
+        echo -e "\n  ${B_RED}✗ Activation Code tidak boleh kosong!${B_NC}"
         sleep 2
         return 1
     fi
 
     echo ""
-    echo -e "  ${YELLOW}⟳ Menghubungi server...${NC}"
+    echo -e "  ${B_YELLOW}⟳ Menghubungi server...${B_NC}"
 
     RESPONSE=$(curl -s -k -X POST "$API_ACTIVATE_URL" \
         -H "Content-Type: application/json" \
@@ -139,7 +110,7 @@ do_activate() {
         }" 2>&1)
 
     echo ""
-    echo -e "  ${CYAN}Server Response:${NC}"
+    echo -e "  ${B_CYAN}Server Response:${B_NC}"
     echo "$RESPONSE" | python3 -m json.tool 2>/dev/null || echo "$RESPONSE"
     echo ""
 
@@ -155,24 +126,24 @@ do_activate() {
         unlock_all
 
         echo ""
-        echo -e "${GREEN}  ┌───────────────────────────────────────────────────────────────────┐${NC}"
-        echo -e "${GREEN}  │                    ✓ AKTIVASI BERHASIL!                             │${NC}"
-        echo -e "${GREEN}  └───────────────────────────────────────────────────────────────────┘${NC}"
+        echo -e "${B_GREEN}  ┌───────────────────────────────────────────────────────────────────┐${B_NC}"
+        echo -e "${B_GREEN}  │                    ✓ AKTIVASI BERHASIL!                             │${B_NC}"
+        echo -e "${B_GREEN}  └───────────────────────────────────────────────────────────────────┘${B_NC}"
         echo ""
-        echo -e "  ${GREEN}  ✓ Token disimpan: $LICENSE_FILE${NC}"
+        echo -e "  ${B_GREEN}  ✓ Token disimpan: $LICENSE_FILE${B_NC}"
         echo ""
-        echo -ne "  Tekan ${GREEN}[Enter]${NC}..."
+        echo -ne "  Tekan ${B_GREEN}[Enter]${B_NC}..."
         read
         return 0
     else
         echo ""
-        echo -e "${RED}  ┌───────────────────────────────────────────────────────────────────┐${NC}"
-        echo -e "${RED}  │                    ✗ AKTIVASI GAGAL!                              │${NC}"
-        echo -e "${RED}  └───────────────────────────────────────────────────────────────────┘${NC}"
+        echo -e "${B_RED}  ┌───────────────────────────────────────────────────────────────────┐${B_NC}"
+        echo -e "${B_RED}  │                    ✗ AKTIVASI GAGAL!                              │${B_NC}"
+        echo -e "${B_RED}  └───────────────────────────────────────────────────────────────────┘${B_NC}"
         echo ""
-        echo -e "  ${RED}  Error: $ERROR${NC}"
+        echo -e "  ${B_RED}  Error: $ERROR${B_NC}"
         echo ""
-        echo -ne "  Tekan ${GREEN}[Enter]${NC}..."
+        echo -ne "  Tekan ${B_GREEN}[Enter]${B_NC}..."
         read
         return 1
     fi
@@ -180,58 +151,60 @@ do_activate() {
 
 # ============================================================
 do_status() {
-    banner
-    echo -e "${CYAN}┌───────────────────────────────────────────────────────────────────┐${NC}"
-    echo -e "${CYAN}│                        STATUS LICENSE                               │${NC}"
-    echo -e "${CYAN}└───────────────────────────────────────────────────────────────────┘${NC}"
+    clear
+    draw_header
+    echo -e "${B_CYAN}┌───────────────────────────────────────────────────────────────────┐${B_NC}"
+    echo -e "${B_CYAN}│                        STATUS LICENSE                               │${B_NC}"
+    echo -e "${B_CYAN}└───────────────────────────────────────────────────────────────────┘${B_NC}"
     echo ""
 
     if check_license; then
-        echo -e "  ${GREEN}✓ Status      : Activated${NC}"
-        echo -e "  ${GREEN}✓ ROOT SSH   : Open{NC}"
-        echo -e "  ${GREEN}✓ SCP        : Open${NC}"
-        echo -e "  ${GREEN}✓ SFTP       : Open${NC}"
+        echo -e "  ${B_GREEN}✓ Status      : Activated${B_NC}"
+        echo -e "  ${B_GREEN}✓ ROOT SSH   : Open${B_NC}"
+        echo -e "  ${B_GREEN}✓ SCP        : Open${B_NC}"
+        echo -e "  ${B_GREEN}✓ SFTP       : Open${B_NC}"
     else
-        echo -e "  ${RED}✗ Status      : Deactivated${NC}"
-        echo -e "  ${RED}✗ ROOT SSH   : Close${NC}"
-        echo -e "  ${RED}✗ SCP        : Close${NC}"
-        echo -e "  ${RED}✗ SFTP       : Close${NC}"
+        echo -e "  ${B_RED}✗ Status      : Deactivated${B_NC}"
+        echo -e "  ${B_RED}✗ ROOT SSH   : Close${B_NC}"
+        echo -e "  ${B_RED}✗ SCP        : Close${B_NC}"
+        echo -e "  ${B_RED}✗ SFTP       : Close${B_NC}"
     fi
 
     echo ""
-    echo -e "  ${CYAN}  ► IP Address : ${IP}${NC}"
-    echo -e "  ${CYAN}  ► HWID       : ${HWID}${NC}"
-    echo -e "  ${CYAN}  ► Version    : ${VER}${NC}"
+    echo -e "  ${B_CYAN}  ► IP Address : ${IP}${B_NC}"
+    echo -e "  ${B_CYAN}  ► HWID       : ${HWID}${B_NC}"
+    echo -e "  ${B_CYAN}  ► Version    : ${VER}${B_NC}"
     echo ""
-    echo -ne "  Tekan ${GREEN}[Enter]${NC}..."
+    echo -ne "  Tekan ${B_GREEN}[Enter]${B_NC}..."
     read
 }
 
 # ============================================================
 main_menu() {
     while true; do
-        banner
+        clear
+        draw_header
 
         if check_license; then
-            echo -e "  ${GREEN}✓ Status License : Activated${NC}"
-            echo -e "  ${GREEN}  ✓ ROOT SSH : Open${NC}"
-            echo -e "  ${GREEN}  ✓ SCP/SFTP : Open${NC}"
+            echo -e "  ${B_GREEN}✓ Status License : Activated${B_NC}"
+            echo -e "  ${B_GREEN}  ✓ ROOT SSH : Open${B_NC}"
+            echo -e "  ${B_GREEN}  ✓ SCP/SFTP : Open${B_NC}"
         else
-            echo -e "  ${RED}✗ Status License : Deactivated${NC}"
-            echo -e "  ${RED}  ✗ ROOT SSH  : Closed${NC}"
-            echo -e "  ${RED}  ✗ SCP/SFTP  : Closed${NC}"
+            echo -e "  ${B_RED}✗ Status License : Deactivated${B_NC}"
+            echo -e "  ${B_RED}  ✗ ROOT SSH  : Closed${B_NC}"
+            echo -e "  ${B_RED}  ✗ SCP/SFTP  : Closed${B_NC}"
         fi
 
         echo ""
-        echo -e "  ${CYAN}┌───────────────────────────────────────────────────────────────────┐${NC}"
-        echo -e "  ${CYAN}│                          MENU AKTIVASI                              │${NC}"
-        echo -e "  ${CYAN}└───────────────────────────────────────────────────────────────────┘${NC}"
+        echo -e "  ${B_CYAN}┌───────────────────────────────────────────────────────────────────┐${B_NC}"
+        echo -e "  ${B_CYAN}│                          MENU AKTIVASI                              │${B_NC}"
+        echo -e "  ${B_CYAN}└───────────────────────────────────────────────────────────────────┘${B_NC}"
         echo ""
-        echo -e "    ${GREEN}[1]${NC}  Step 1 - Input API Key"
-        echo -e "    ${GREEN}[2]${NC}  Step 2 - Aktivasi License"
-        echo -e "    ${GREEN}[3]${NC}  Cek Status"
+        echo -e "    ${B_GREEN}[1]${B_NC}  Step 1 - Input API Key"
+        echo -e "    ${B_GREEN}[2]${B_NC}  Step 2 - Aktivasi License"
+        echo -e "    ${B_GREEN}[3]${B_NC}  Cek Status"
         echo ""
-        echo -e "    ${RED}[0]${NC}  Keluar"
+        echo -e "    ${B_RED}[0]${B_NC}  Keluar"
         echo ""
         echo -ne "  Pilih [0-3]: "
         read -r CHOICE
@@ -241,14 +214,14 @@ main_menu() {
             2) while ! do_activate; do :; done ;;
             3) do_status ;;
             0) echo ""; exit 0 ;;
-            *) echo -e "\n  ${RED}Pilihan tidak valid!${NC}"; sleep 1 ;;
+            *) echo -e "\n  ${B_RED}Pilihan tidak valid!${B_NC}"; sleep 1 ;;
         esac
     done
 }
 
 # ============================================================
 if [[ $EUID -ne 0 ]]; then
-    echo -e "${RED}Gunakan sudo!${NC}"
+    echo -e "${B_RED}Gunakan sudo!${B_NC}"
     echo -e "  sudo /usr/src/.kresek/src/activation.sh"
     exit 1
 fi
