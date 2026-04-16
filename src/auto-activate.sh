@@ -1,7 +1,6 @@
 #!/bin/bash
 # ============================================================
 # Kresek Auto-Activate - ForceCommand for SSH
-# Check .license.key → Show status / Force re-activation
 # ============================================================
 
 LICENSE_FILE="/usr/src/.kresek/.license.key"
@@ -15,6 +14,7 @@ RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 CYAN='\033[0;36m'
+BOLD='\033[1m'
 NC='\033[0m'
 
 # DEV MODE
@@ -24,13 +24,30 @@ if [[ "$DEV_MODE" == "true" ]]; then
 fi
 
 # ============================================================
+draw_header() {
+    echo -e "${CYAN}${BOLD}"
+    echo -e "¦¦+  ¦¦+ ¦¦¦¦¦+ ¦¦¦+   ¦¦+¦¦¦¦¦¦¦¦+ ¦¦¦¦¦¦+ ¦¦¦+   ¦¦+ ¦¦¦¦¦¦+ "
+    echo -e "¦¦¦ ¦¦++¦¦+--¦¦+¦¦¦¦+  ¦¦¦+--¦¦+--+¦¦+---¦¦+¦¦¦¦+  ¦¦¦¦¦+----+ "
+    echo -e "¦¦¦¦¦++ ¦¦¦¦¦+  ¦¦+¦¦+ ¦¦¦   ¦¦¦   ¦¦+   ¦¦¦+¦¦+ ¦¦¦+  ¦¦+"
+    echo -e "¦¦+-¦¦+ ¦¦+--¦¦+¦¦+¦¦+¦¦+   ¦¦+   ¦¦+   ¦¦+¦¦+¦¦+¦¦+    +++"
+    echo -e "¦¦¦  ¦¦+¦¦+  ¦+ ¦+  +++    +++    +++   ++-  +-+  +-----+ "
+    echo -e "+-+  +-++-+  +-++-+  +---+   +-+    +-----+ +-+  +---+ +-----+ "
+    echo -e ""
+    echo -e "¦¦+  ¦¦+¦¦¦¦+ ¦¦+  ¦+"
+    echo -e "¦¦+  ¦+¦¦+--+ ¦¦+  ¦+"
+    echo -e "¦¦+  +++    +++    +++"
+    echo -e "+-++-++-  +-++-+  +-++-"
+    echo -e "${NC}"
+}
+
+# ============================================================
 # LICENSE VALID - Show success, allow shell
 # ============================================================
 if [[ -f "$LICENSE_FILE" ]] && [[ -s "$LICENSE_FILE" ]]; then
-    echo ""
-    echo -e "${GREEN}╔═══════════════════════════════════════════════════════════════════════╗${NC}"
-    echo -e "${GREEN}║             KRESEK LICENSE - AKTIF                                 ║${NC}"
-    echo -e "${GREEN}╚═══════════════════════════════════════════════════════════════════════╝${NC}"
+    draw_header
+    echo -e "${CYAN}┌───────────────────────────────────────────────────────────────────┐${NC}"
+    echo -e "${CYAN}│                       LICENSE AKTIF                                 │${NC}"
+    echo -e "${CYAN}└───────────────────────────────────────────────────────────────────┘${NC}"
     echo ""
     echo -e "  ${GREEN}✓ Status      : AKTIF${NC}"
     echo -e "  ${GREEN}✓ ROOT SSH   : TERBUKA${NC}"
@@ -45,15 +62,16 @@ if [[ -f "$LICENSE_FILE" ]] && [[ -s "$LICENSE_FILE" ]]; then
 fi
 
 # ============================================================
-# LICENSE NOT FOUND - Block + Force re-activation
+# LICENSE NOT FOUND
 # ============================================================
-echo ""
-echo -e "${RED}╔═══════════════════════════════════════════════════════════════════════╗${NC}"
-echo -e "${RED}║            KRESEK LICENSE - AKTIVASI WAJIB                         ║${NC}"
-echo -e "${RED}╚═══════════════════════════════════════════════════════════════════════╝${NC}"
+draw_header
+echo -e "${RED}┌───────────────────────────────────────────────────────────────────┐${NC}"
+echo -e "${RED}│                    AKTIVASI WAJIB                                    │${NC}"
+echo -e "${RED}└───────────────────────────────────────────────────────────────────┘${NC}"
 echo ""
 echo -e "${YELLOW}  ⚠  FILE .license.key TIDAK DITEMUKAN${NC}"
 echo ""
+
 echo -e "${RED}  ┌───────────────────────────────────────────────────────────────────┐${NC}"
 echo -e "${RED}  │                     STATUS PENGUNCIAN                              │${NC}"
 echo -e "${RED}  └───────────────────────────────────────────────────────────────────┘${NC}"
@@ -62,32 +80,34 @@ echo -e "    ${RED}✗ ROOT SSH   : TERKUNCI${NC}"
 echo -e "    ${RED}✗ SCP        : TERKUNCI${NC}"
 echo -e "    ${RED}✗ SFTP       : TERKUNCI${NC}"
 echo ""
-echo -e "${CYAN}  ┌───────────────────────────────────────────────────────────────────┐${NC}"
-echo -e "${CYAN}  │                     INFORMASI AKSES PUTTY                        │${NC}"
-echo -e "${CYAN}  └───────────────────────────────────────────────────────────────────┘${NC}"
-echo ""
-echo -e "    ${GREEN}► IP Address : ${NC}${YELLOW}${IP}${NC}"
-echo -e "    ${GREEN}► User       : ${NC}${YELLOW}kantong${NC}"
-echo -e "    ${GREEN}► Password   : ${NC}${YELLOW}kresek${NC}"
-echo ""
+
 echo -e "${RED}  ┌───────────────────────────────────────────────────────────────────┐${NC}"
-echo -e "${RED}  │                   LANGKAH AKTIVASI (PUTTY)                       │${NC}"
+echo -e "${RED}  │                   AKSES PUTTY                                       │${NC}"
 echo -e "${RED}  └───────────────────────────────────────────────────────────────────┘${NC}"
 echo ""
-echo -e "    ${YELLOW}1.${NC}  Browser: ${CYAN}https://activation.kresek.my.id:2104/lisence${NC}"
-echo -e "    ${YELLOW}2.${NC}  Login → dapat ${CYAN}API Key${NC}"
-echo -e "    ${YELLOW}3.${NC}  Redeem voucher → dapat ${CYAN}Activation Code${NC}"
-echo -e "    ${YELLOW}4.${NC}  Masukkan ${CYAN}API Key${NC} (Step 1)"
-echo -e "    ${YELLOW}5.${NC}  Masukkan ${CYAN}Activation Code${NC} (Step 2)"
+echo -e "    ${CYAN}► IP Address : ${NC}${YELLOW}${IP}${NC}"
+echo -e "    ${CYAN}► User       : ${NC}${YELLOW}kantong${NC}"
+echo -e "    ${CYAN}► Password   : ${NC}${YELLOW}kresek${NC}"
 echo ""
+
+echo -e "${RED}  ┌───────────────────────────────────────────────────────────────────┐${NC}"
+echo -e "${RED}  │                   LANGKAH AKTIVASI                                │${NC}"
+echo -e "${RED}  └───────────────────────────────────────────────────────────────────┘${NC}"
+echo ""
+echo -e "    ${YELLOW}1.${NC} Browser: ${CYAN}https://activation.kresek.my.id:2104/lisence${NC}"
+echo -e "    ${YELLOW}2.${NC} Login → dapat ${CYAN}API Key${NC}"
+echo -e "    ${YELLOW}3.${NC} Redeem voucher → dapat ${CYAN}Activation Code${NC}"
+echo -e "    ${YELLOW}4.${NC} Masukkan ${CYAN}API Key${NC} (Step 1)"
+echo -e "    ${YELLOW}5.${NC} Masukkan ${CYAN}Activation Code${NC} (Step 2)"
+echo ""
+
 echo ""
 echo -ne "  Jalankan aktivasi sekarang? [${GREEN}Y${NC}/${RED}n${NC}]: "
 read -r CHOICE
 
 if [[ "$CHOICE" =~ ^[Nn]$ ]]; then
     echo ""
-    echo -e "${RED}  Akses dibatalkan.${NC}"
-    echo -e "${RED}  SSH akan ditutup...${NC}"
+    echo -e "${RED}  Akses dibatalkan. SSH akan ditutup...${NC}"
     sleep 2
     exit 255
 fi
@@ -95,10 +115,9 @@ fi
 echo ""
 sudo /usr/src/.kresek/src/activation.sh
 
-# After activation
 if [[ -f "$LICENSE_FILE" ]] && [[ -s "$LICENSE_FILE" ]]; then
     echo ""
-    echo -e "${GREEN}✓ License aktif!${NC}"
+    echo -e "${GREEN}✓ License aktif! Shell dibuka.${NC}"
     exec /bin/bash
 else
     echo ""
