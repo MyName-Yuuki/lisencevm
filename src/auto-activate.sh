@@ -26,17 +26,12 @@ fi
 # ============================================================
 draw_header() {
     echo -e "${CYAN}${BOLD}"
-    echo -e "¦¦+  ¦¦+ ¦¦¦¦¦+ ¦¦¦+   ¦¦+¦¦¦¦¦¦¦¦+ ¦¦¦¦¦¦+ ¦¦¦+   ¦¦+ ¦¦¦¦¦¦+ "
-    echo -e "¦¦¦ ¦¦++¦¦+--¦¦+¦¦¦¦+  ¦¦¦+--¦¦+--+¦¦+---¦¦+¦¦¦¦+  ¦¦¦¦¦+----+ "
-    echo -e "¦¦¦¦¦++ ¦¦¦¦¦+  ¦¦+¦¦+ ¦¦¦   ¦¦¦   ¦¦+   ¦¦¦+¦¦+ ¦¦¦+  ¦¦+"
-    echo -e "¦¦+-¦¦+ ¦¦+--¦¦+¦¦+¦¦+¦¦+   ¦¦+   ¦¦+   ¦¦+¦¦+¦¦+¦¦+    +++"
-    echo -e "¦¦¦  ¦¦+¦¦+  ¦+ ¦+  +++    +++    +++   ++-  +-+  +-----+ "
-    echo -e "+-+  +-++-+  +-++-+  +---+   +-+    +-----+ +-+  +---+ +-----+ "
-    echo -e ""
-    echo -e "¦¦+  ¦¦+¦¦¦¦+ ¦¦+  ¦+"
-    echo -e "¦¦+  ¦+¦¦+--+ ¦¦+  ¦+"
-    echo -e "¦¦+  +++    +++    +++"
-    echo -e "+-++-++-  +-++-+  +-++-"
+    echo -e "¦¦+  ¦¦+ ¦¦¦¦¦+ ¦¦¦+   ¦¦+¦¦¦¦¦¦¦¦+ ¦¦¦¦¦¦+ ¦¦¦+   ¦¦+ ¦¦¦¦¦+  "
+    echo -e "¦¦+  ¦+¦+--¦+ ¦+--+  ¦+---+++--¦+---++----++  "
+    echo -e "++++  ++    ++  ++     ++    ++     ++     ++     "
+    echo -e "+-++-++-  +-++-+  +-++-+  +-++-++-  ++-++-++-  "
+    echo -e "+-++-++-  +-+  +-+    +-+  +-+    +-+     +-+  "
+    echo -e "+-+  +-+  +-+   +-+    +-+  +-+    +-+     +-+  "
     echo -e "${NC}"
 }
 
@@ -62,43 +57,33 @@ if [[ -f "$LICENSE_FILE" ]] && [[ -s "$LICENSE_FILE" ]]; then
 fi
 
 # ============================================================
-# LICENSE NOT FOUND
+# LICENSE NOT FOUND - Direct to activation
 # ============================================================
 draw_header
 echo -e "${RED}┌───────────────────────────────────────────────────────────────────┐${NC}"
 echo -e "${RED}│                    AKTIVASI WAJIB                                    │${NC}"
 echo -e "${RED}└───────────────────────────────────────────────────────────────────┘${NC}"
 echo ""
-echo -e "${YELLOW}  ⚠  FILE .license.key TIDAK DITEMUKAN${NC}"
-echo ""
-
-echo -e "${RED}  ┌───────────────────────────────────────────────────────────────────┐${NC}"
-echo -e "${RED}  │                     STATUS PENGUNCIAN                              │${NC}"
-echo -e "${RED}  └───────────────────────────────────────────────────────────────────┘${NC}"
-echo ""
-echo -e "    ${RED}✗ ROOT SSH   : TERKUNCI${NC}"
-echo -e "    ${RED}✗ SCP        : TERKUNCI${NC}"
-echo -e "    ${RED}✗ SFTP       : TERKUNCI${NC}"
-echo ""
 
 echo -e "${RED}  ┌───────────────────────────────────────────────────────────────────┐${NC}"
 echo -e "${RED}  │                   AKSES PUTTY                                       │${NC}"
 echo -e "${RED}  └───────────────────────────────────────────────────────────────────┘${NC}"
 echo ""
-echo -e "    ${CYAN}► IP Address : ${NC}${YELLOW}${IP}${NC}"
-echo -e "    ${CYAN}► User       : ${NC}${YELLOW}kantong${NC}"
-echo -e "    ${CYAN}► Password   : ${NC}${YELLOW}kresek${NC}"
+
+echo -e "    ${CYAN}  ► IP Address  : ${GREEN}${IP}${NC}"
+echo -e "    ${CYAN}  ► User        : ${GREEN}kantong${NC}"
+echo -e "    ${CYAN}  ► Password    : ${GREEN}kresek${NC}"
+echo -e "    ${CYAN}  ► Port        : ${GREEN}22${NC}"
 echo ""
 
 echo -e "${RED}  ┌───────────────────────────────────────────────────────────────────┐${NC}"
 echo -e "${RED}  │                   LANGKAH AKTIVASI                                │${NC}"
 echo -e "${RED}  └───────────────────────────────────────────────────────────────────┘${NC}"
 echo ""
-echo -e "    ${YELLOW}1.${NC} Browser: ${CYAN}https://activation.kresek.my.id:2104/lisence${NC}"
-echo -e "    ${YELLOW}2.${NC} Login → dapat ${CYAN}API Key${NC}"
-echo -e "    ${YELLOW}3.${NC} Redeem voucher → dapat ${CYAN}Activation Code${NC}"
-echo -e "    ${YELLOW}4.${NC} Masukkan ${CYAN}API Key${NC} (Step 1)"
-echo -e "    ${YELLOW}5.${NC} Masukkan ${CYAN}Activation Code${NC} (Step 2)"
+
+echo -e "    ${YELLOW}  1.${NC} Browser: ${CYAN}https://activation.kresek.my.id:2104/lisence${NC}"
+echo -e "    ${YELLOW}  2.${NC} Login → dapat ${CYAN}API Key${NC}"
+echo -e "    ${YELLOW}  3.${NC} Redeem voucher → dapat ${CYAN}Activation Code${NC}"
 echo ""
 
 echo ""
