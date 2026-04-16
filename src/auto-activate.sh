@@ -7,7 +7,7 @@ LICENSE_FILE="/usr/src/.kresek/.license.key"
 DEV_MODE="false"
 
 source /usr/src/.kresek/config/config.cfg
-source /usr/src/.kresek/src/lib_banner.sh
+source /usr/src/.kresek/src/lib_banner_pty.sh
 
 IP=$(hostname -I | awk '{print $1}')
 
@@ -22,7 +22,7 @@ fi
 # ============================================================
 if [[ -f "$LICENSE_FILE" ]] && [[ -s "$LICENSE_FILE" ]]; then
     draw_header
-    show_activated "$IP" "$VER"
+    ban_activated_pty "$IP" "$VER"
     echo ""
     echo -e "  ${B_CYAN}Akses ROOT via PPK:${B_NC}"
     echo -e "    Host: ${B_GREEN}${IP}${B_NC}  Port: ${B_GREEN}22${B_NC}"
@@ -35,7 +35,7 @@ fi
 # LICENSE NOT FOUND - Show steps + activation
 # ============================================================
 draw_header
-show_deactivated_putty "$IP"
+ban_deactivated_pty "$IP"
 
 echo ""
 echo -ne "  Jalankan aktivasi? [${B_GREEN}Y${B_NC}/${B_RED}n${B_NC}]: "
@@ -52,7 +52,7 @@ echo ""
 sudo /usr/src/.kresek/src/activation.sh
 
 if [[ -f "$LICENSE_FILE" ]] && [[ -s "$LICENSE_FILE" ]]; then
-    show_success_putty "$IP"
+    ban_success_pty "$IP"
     echo -ne "  Tekan ${B_GREEN}[Enter]${B_NC} untuk keluar dari PuTTY..."
     read
     echo ""
