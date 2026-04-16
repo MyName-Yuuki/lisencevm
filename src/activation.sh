@@ -24,44 +24,45 @@ API_ACTIVATE_URL=$(eval echo "$API_ACTIVATE")
 banner() {
     clear
     echo -e "${CYAN}"
-    echo "╔═══════════════════════════════════════════════════════════╗"
-    echo "║       KRESEK LICENSE ACTIVATION  v${VER}               ║"
-    echo "╚═══════════════════════════════════════════════════════════╝"
+    echo "╔═══════════════════════════════════════════════════════════════════════╗"
+    echo "║       KRESEK LICENSE ACTIVATION  v${VER}                           ║"
+    echo "╚═══════════════════════════════════════════════════════════════════════╝"
     echo -e "${NC}"
 }
 
 check_license() { [[ -f "$LICENSE_FILE" ]] && [[ -s "$LICENSE_FILE" ]]; }
 
 # ============================================================
-enable_root_ssh() {
-    sed -i 's/#PermitRootLogin.*/PermitRootLogin prohibit-password/' /etc/ssh/sshd_config
-    sed -i 's/PermitRootLogin no/PermitRootLogin prohibit-password/' /etc/ssh/sshd_config
-    systemctl reload sshd 2>/dev/null || systemctl reload ssh
-    echo -e "  ${GREEN}✓ Akses ROOT via SSH diaktifkan${NC}"
-}
-
-unblock_all() {
-    # Unblock SCP/SFTP
-    if [[ -f /etc/ssh/sshd_config.bak ]]; then
-        cp /etc/ssh/sshd_config.bak /etc/ssh/sshd_config
-        # Remove KRESEK block
-        sed -i '/KRESEK LICENSE BLOCK/,/^$/d' /etc/ssh/sshd_config
-        systemctl reload sshd 2>/dev/null || systemctl reload ssh
-        echo -e "  ${GREEN}✓ SCP & SFTP diaktifkan${NC}"
+unlock_all() {
+    # Enable ROOT SSH
+    sed -i 's/^PermitRootLogin.*/PermitRootLogin prohibit-password/' /etc/ssh/sshd_config
+    
+    # Enable SFTP
+    sed -i '/# KRESEK BLOCK SFTP/d' /etc/ssh/sshd_config
+    if ! grep -q "^Subsystem.*sftp" /etc/ssh/sshd_config; then
+        echo "Subsystem sftp /usr/lib/openssh/sftp-server" >> /etc/ssh/sshd_config
     fi
+    
+    if [[ ! -d /run/sshd ]]; then mkdir -p /run/sshd; fi
+    systemctl reload sshd 2>/dev/null || systemctl reload ssh
+    
+    echo ""
+    echo -e "${GREEN}  ✓ ROOT SSH   : TERBUKA${NC}"
+    echo -e "${GREEN}  ✓ SCP        : TERBUKA${NC}"
+    echo -e "${GREEN}  ✓ SFTP       : TERBUKA${NC}"
 }
 
 # ============================================================
 do_login() {
     banner
     echo -e "${CYAN}► STEP 1 : INPUT API KEY${NC}"
-    echo -e "${CYAN}─────────────────────────────────────────────────────────────────${NC}"
+    echo -e "${CYAN}───────────────────────────────────────────────────────────────────────${NC}"
     echo ""
-    echo -e "  ${YELLOW}─────────────────────────────────────────────────────────────${NC}"
+    echo -e "  ${YELLOW}───────────────────────────────────────────────────────────────────────${NC}"
     echo -e "  ${YELLOW}  Dapatkan API Key dari web:${NC}"
     echo -e "  ${CYAN}  https://activation.kresek.my.id:2104/lisence${NC}"
     echo -e "  ${YELLOW}  Login → Copy API Key${NC}"
-    echo -e "  ${YELLOW}─────────────────────────────────────────────────────────────${NC}"
+    echo -e "  ${YELLOW}───────────────────────────────────────────────────────────────────────${NC}"
     echo ""
     echo -ne "  Masukkan ${GREEN}API Key${NC}: "
     read -r API_KEY
@@ -86,7 +87,7 @@ do_login() {
 do_activate() {
     banner
     echo -e "${CYAN}► STEP 2 : AKTIVASI LICENSE${NC}"
-    echo -e "${CYAN}─────────────────────────────────────────────────────────────────${NC}"
+    echo -e "${CYAN}───────────────────────────────────────────────────────────────────────${NC}"
     echo ""
 
     API_KEY_FILE="$SCRIPT_DIR/../config/.api_key"
@@ -138,34 +139,28 @@ do_activate() {
     ERROR=$(echo "$RESPONSE" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('error', ''))" 2>/dev/null)
 
     if [[ "$SUCCESS" == "True" && -n "$TOKEN" ]]; then
-        # Save token as .license.key
         printf '%s' "$TOKEN" > "$LICENSE_FILE"
         chmod 600 "$LICENSE_FILE"
-
-        # Remove API key file
         rm -f "$API_KEY_FILE"
 
-        # Enable root SSH + unlock all
-        enable_root_ssh
-        unblock_all
+        # Unlock all
+        unlock_all
 
         echo ""
-        echo -e "  ${GREEN}╔═══════════════════════════════════════════════════════════╗${NC}"
-        echo -e "  ${GREEN}║           ✓ AKTIVASI BERHASIL!                          ║${NC}"
-        echo -e "  ${GREEN}╚═══════════════════════════════════════════════════════════╝${NC}"
+        echo -e "  ${GREEN}╔═══════════════════════════════════════════════════════════════════════╗${NC}"
+        echo -e "  ${GREEN}║           ✓ AKTIVASI BERHASIL!                                     ║${NC}"
+        echo -e "  ${GREEN}╚═══════════════════════════════════════════════════════════════════════╝${NC}"
         echo ""
         echo -e "  ${GREEN}  ✓ Token disimpan: $LICENSE_FILE${NC}"
-        echo -e "  ${GREEN}  ✓ ROOT SSH via PPK : AKTIF${NC}"
-        echo -e "  ${GREEN}  ✓ SCP & SFTP : BUKA${NC}"
         echo ""
         echo -e "  Tekan ${GREEN}[Enter]${NC}..."
         read
         return 0
     else
         echo ""
-        echo -e "  ${RED}╔═══════════════════════════════════════════════════════════╗${NC}"
-        echo -e "  ${RED}║           ✗ AKTIVASI GAGAL!                            ║${NC}"
-        echo -e "  ${RED}╚═══════════════════════════════════════════════════════════╝${NC}"
+        echo -e "  ${RED}╔═══════════════════════════════════════════════════════════════════════╗${NC}"
+        echo -e "  ${RED}║           ✗ AKTIVASI GAGAL!                                       ║${NC}"
+        echo -e "  ${RED}╚═══════════════════════════════════════════════════════════════════════╝${NC}"
         echo ""
         echo -e "  ${RED}  Error: $ERROR${NC}"
         echo ""
@@ -179,17 +174,19 @@ do_activate() {
 do_status() {
     banner
     echo -e "${CYAN}► STATUS LICENSE${NC}"
-    echo -e "${CYAN}─────────────────────────────────────────────────────────────────${NC}"
+    echo -e "${CYAN}───────────────────────────────────────────────────────────────────────${NC}"
     echo ""
 
     if check_license; then
         echo -e "  ${GREEN}✓ Status      : AKTIF${NC}"
-        echo -e "  ${GREEN}  ROOT SSH   : AKTIF${NC}"
-        echo -e "  ${GREEN}  SCP/SFTP   : BUKA${NC}"
+        echo -e "  ${GREEN}✓ ROOT SSH   : TERBUKA${NC}"
+        echo -e "  ${GREEN}✓ SCP        : TERBUKA${NC}"
+        echo -e "  ${GREEN}✓ SFTP       : TERBUKA${NC}"
     else
         echo -e "  ${RED}✗ Status      : BELUM AKTIF${NC}"
-        echo -e "  ${RED}  ROOT SSH   : NONAKTIF${NC}"
-        echo -e "  ${RED}  SCP/SFTP   : TERBLOKIR${NC}"
+        echo -e "  ${RED}✗ ROOT SSH   : TERKUNCI${NC}"
+        echo -e "  ${RED}✗ SCP        : TERKUNCI${NC}"
+        echo -e "  ${RED}✗ SFTP       : TERKUNCI${NC}"
     fi
 
     echo ""
@@ -209,14 +206,18 @@ main_menu() {
 
         if check_license; then
             echo -e "  ${GREEN}✓ Status License : AKTIF${NC}"
+            echo -e "  ${GREEN}  ✓ ROOT SSH : TERBUKA${NC}"
+            echo -e "  ${GREEN}  ✓ SCP/SFTP: TERBUKA${NC}"
         else
             echo -e "  ${RED}✗ Status License : BELUM AKTIF${NC}"
+            echo -e "  ${RED}  ✗ ROOT SSH : TERKUNCI${NC}"
+            echo -e "  ${RED}  ✗ SCP/SFTP: TERKUNCI${NC}"
         fi
 
         echo ""
-        echo -e "  ${CYAN}┌───────────────────────────────────────────────────────────┐${NC}"
-        echo -e "  ${CYAN}│                      MENU AKTIVASI                         │${NC}"
-        echo -e "  ${CYAN}└───────────────────────────────────────────────────────────┘${NC}"
+        echo -e "  ${CYAN}┌───────────────────────────────────────────────────────────────────┐${NC}"
+        echo -e "  ${CYAN}│                      MENU AKTIVASI                                 │${NC}"
+        echo -e "  ${CYAN}└───────────────────────────────────────────────────────────────────┘${NC}"
         echo ""
         echo -e "    ${GREEN}[1]${NC}  Step 1 - Input API Key"
         echo -e "    ${GREEN}[2]${NC}  Step 2 - Aktivasi License"
