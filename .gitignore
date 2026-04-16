@@ -12,3 +12,5 @@ config/.api_key
 
 # License key - DO NOT COMMIT
 .license.key
+.git-credentials/
+.github_token
